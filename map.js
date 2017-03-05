@@ -1,6 +1,6 @@
 var map = new BMap.Map("map", {});                        // 创建Map实例
 map.centerAndZoom(new BMap.Point(104.0712, 30.5762), 12);     // 初始化地图,设置中心点坐标和地图级别
-map.enableScrollWheelZoom();                            //启用滚轮放大缩小
+//map.enableScrollWheelZoom();                            //启用滚轮放大缩小
 if (document.createElement('canvas').getContext) {
   var  mapStyle ={ 
     features: ["road", "building","water","land"],//隐藏地图上的poi
@@ -15,12 +15,13 @@ if (document.createElement('canvas').getContext) {
     timer         = null, //定时器
     timeLine      = null, //时间轴对象
     rs            = [],   //最新的结果
-    isNowTimeData = false, //是否显示当前时间的定位情况
+    isNowTimeData = true, //是否显示当前时间的定位情况
     py            = null, //偏移
     gridWidth     = 10000,//网格的大小
     isOverlay     = false,//是否叠加
     //gridWidth   = 1,//网格的大小
     canvas        = null; //偏移
+var rawData = []
 
   function Star(options){
     this.init(options);
@@ -110,18 +111,24 @@ if (document.createElement('canvas').getContext) {
     canvas.height = BH = size.height;
     map.getPanes().labelPane.appendChild(canvas);
     //map.getContainer().appendChild(canvas);
-    return this.canvas;
+    //
+
+
+    //return this.canvas;
   }
   ComplexCustomOverlay.prototype.draw = function(){
     var map = this._map;
     var bounds = map.getBounds();
     var sw = bounds.getSouthWest();
     var ne = bounds.getNorthEast();
+    //draw star
     var pixel = map.pointToOverlayPixel(new BMap.Point(sw.lng, ne.lat));
     py = pixel;
     if (rs.length > 0) {
       showStars(rs);
     }
+
+      //var pixel = map.pointToOverlayPixel(this._point);
   }
   var myCompOverlay = new ComplexCustomOverlay(new BMap.Point(116.407845,39.914101));
   map.addOverlay(myCompOverlay);
@@ -155,6 +162,7 @@ if (document.createElement('canvas').getContext) {
           const item = i[0]
           return [item.latitude, item.longitude,100, item]
         })
+        rawData = houseInfo
         return houseInfo
       })
       .then(d => grade(d))
@@ -222,12 +230,14 @@ if (document.createElement('canvas').getContext) {
           setTimeout(function(){
             if (isNowTimeData) {
               startCbk(nowTimeCbk);
+   myCompOverlay = new ComplexCustomOverlay(new BMap.Point(116.407845,39.914101));
             }
           }, 1000);
         }
       })
     }
     function startCbk(cbk){
+      console.log("hhhhhhhhhhh")
       var now = new Date();
       var time = {
         hour   : now.getHours(),
@@ -242,4 +252,46 @@ if (document.createElement('canvas').getContext) {
   } else {
     alert('请在chrome、safari、IE8+以上浏览器查看本示例');
   }
+//map.addEventListener("click",function(e){
+  //rawData.find(i => {
+    //if(mostlyEqual(e.point.lng,i[1]) && mostlyEqual(e.point.lat, i[0])){
+      //console.log(true)
+    //}
+  //})
 
+//});
+function mostlyEqual (a,b) {
+  console.log(a -b)
+  return Math.abs(a - b) < 0.001 
+}
+function creatEle (top,left) {
+
+  var div =  document.createElement("div");
+      div.className = "testaa"
+      div.style.position = "absolute";
+      div.style.left = top + "px";
+      div.style.top  = left + "px";
+      //div.style.zIndex = BMap.Overlay.getZIndex(this._point.lat);
+      div.style.backgroundColor = "#EE5D5B";
+      div.style.border = "1px solid #BC3B3A";
+      div.style.color = "white";
+      div.style.height = "18px";
+      div.style.padding = "2px";
+      div.style.lineHeight = "18px";
+      div.style.whiteSpace = "nowrap";
+      div.style.MozUserSelect = "none";
+      div.style.fontSize = "12px";
+      div.style.visibility = "hidden";
+     
+      div.onmouseover = function(){
+        div.style.visibility = "visible";
+        div.innerHTML = "tset"
+        //this.getElementsByTagName("span")[0].innerHTML = that._overText;
+      }
+
+      div.onmouseout = function(){
+        div.style.visibility = "hidden";
+        //this.getElementsByTagName("span")[0].innerHTML = that._text;
+      }
+      return div;
+}

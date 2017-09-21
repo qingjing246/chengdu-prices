@@ -148,7 +148,7 @@ var rawData = []
 
   //get data
   function fetchData  (cb) {
-    var url = "./chengdu-prices/data.json";
+    var url = "./data.json";
     fetch(url)
       .then(res => {
         return res.json()

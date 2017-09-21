@@ -148,7 +148,7 @@ var rawData = []
 
   //get data
   function fetchData  (cb) {
-    var url = "./data.json";
+    var url = "./chengdu-prices/data.json";
     fetch(url)
       .then(res => {
         return res.json()
@@ -237,7 +237,7 @@ var rawData = []
       })
     }
     function startCbk(cbk){
-      console.log("hhhhhhhhhhh")
+      
       var now = new Date();
       var time = {
         hour   : now.getHours(),
